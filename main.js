@@ -88,7 +88,11 @@ function sync(ch) {
         if (t >= vids[ch][i].playAt && t < vids[ch][i].playAt + vids[ch][i].duration) {
             playingNowOrder = i;
             playingNow = vids[ch][i].id;
-            startAt = t - vids[ch][i].playAt;
+            if (player && player.getCurrentTime) {
+                startAt = player.getCurrentTime();
+            } else {
+                startAt = t - vids[ch][i].playAt;
+            }
             console.log("Synced to video:", playingNow, "at", startAt);
             return true;
         }
@@ -99,7 +103,11 @@ function sync(ch) {
         let firstVideoKey = Object.keys(vids[ch])[0];
         playingNowOrder = firstVideoKey;
         playingNow = vids[ch][firstVideoKey].id;
-        startAt = 0;
+        if (player && player.getCurrentTime) {
+            startAt = player.getCurrentTime();
+        } else {
+            startAt = 0;
+        }
         console.log("Playing first video in channel:", playingNow);
         return true;
     }
