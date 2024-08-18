@@ -11,6 +11,7 @@ let channelNumber = 1;
 let isMin = false, isMuted = true, isOn = true, showInfo = false, showChat = false;
 let chatMessages = [];
 let userName = '';
+let socket;
 
 if (localStorage.getItem("storedChannelNumber") === null) {
     channelNumber = 1;
@@ -336,6 +337,22 @@ function initializeChat() {
     const minimizeBtn = chatContainer.querySelector('.chat-minimize-btn');
     minimizeBtn.addEventListener('click', minimizeChat);
     updateMinimizeButton();
+
+    // Connect to WebSocket server
+    socket = new WebSocket('wss://your-websocket-service.onrender.com'); // Update this URL
+
+    socket.addEventListener('open', function (event) {
+        console.log('Connected to WebSocket server');
+    });
+
+    socket.addEventListener('message', function (event) {
+        const chatMessage = JSON.parse(event.data);
+        displayChatMessage(chatMessage);
+    });
+
+    socket.addEventListener('close', function (event) {
+        console.log('Disconnected from WebSocket server');
+    });
 }
 
 function updateMinimizeButton() {
@@ -363,6 +380,9 @@ function sendChatMessage() {
         chatMessages.push(chatMessage);
         displayChatMessage(chatMessage);
         chatInput.value = '';
+
+        // Send message to WebSocket server
+        socket.send(JSON.stringify(chatMessage));
     }
 }
 
