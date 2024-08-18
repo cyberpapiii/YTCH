@@ -336,9 +336,9 @@ body {
 }
 
 .chat-container {
-    position: fixed;
-    bottom: 2rem;
-    left: 2rem;
+    position: fixed; /* Change from absolute to fixed */
+    bottom: 1rem;    /* Align to the bottom */
+    left: 1rem;      /* Align to the left */
     max-width: 400px;
     max-height: 265px;
     display: flex;
