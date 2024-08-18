@@ -344,17 +344,17 @@ function initializeChat() {
 }
 
 function connectWebSocket() {
-    socket = new WebSocket('wss://ytch.onrender.com'); // Updated URL
+    socket = new WebSocket('wss://ytch.onrender.com');
 
     socket.addEventListener('open', function (event) {
         console.log('Connected to WebSocket server');
-        reconnectAttempts = 0; // Reset reconnect attempts on successful connection
+        reconnectAttempts = 0;
     });
 
     socket.addEventListener('message', function (event) {
         const data = JSON.parse(event.data);
         if (data.type === 'userCount') {
-            userCountElement.textContent = data.count;
+            updateUserCount(data.count);
         } else {
             displayChatMessage(data);
         }
@@ -367,7 +367,7 @@ function connectWebSocket() {
 
     socket.addEventListener('error', function (event) {
         console.error('WebSocket error:', event);
-        socket.close(); // Close the socket to trigger the reconnect logic
+        socket.close();
     });
 }
 
@@ -396,17 +396,20 @@ function updateMinimizeButton() {
     }
 }
 
+function updateUserCount(count) {
+    userCountElement.textContent = count;
+}
+
 function sendChatMessage() {
     const chatInput = document.querySelector('.chat-input');
     const message = chatInput.value.trim();
     if (message && userName) {
         const chatMessage = {
-            channel: channelNumber,
             user: userName,
             message: message,
             timestamp: new Date().toLocaleTimeString()
         };
-        chatInput.value = ''; // Clear the input field
+        chatInput.value = '';
 
         // Send message to WebSocket server
         socket.send(JSON.stringify(chatMessage));
