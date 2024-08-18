@@ -6,9 +6,13 @@ let videoId = document.querySelector(".video-id");
 let control = document.querySelector(".control");
 let powerScreen = document.querySelector(".power-screen");
 let info = document.querySelector(".info");
+let chatContainer = document.querySelector(".chat-container");
+let chatMessages = document.querySelector(".chat-messages");
+let chatInput = document.querySelector(".chat-input");
 let player, playingNow, playingNowOrder, startAt, vids;
 let channelNumber = 1;
-let isMin = false, isMuted = true, isOn = true, showInfo = false;
+let isMin = false, isMuted = true, isOn = true, showInfo = false, showChat = false;
+let socket;
 
 if (localStorage.getItem("storedChannelNumber") === null) {
     channelNumber = 1;
@@ -310,3 +314,59 @@ function toggleInfo() {
         info.style.display = "flex";
     }
 }
+
+function initializeChat() {
+    socket = new WebSocket('ws://' + window.location.hostname + ':8080');
+
+    socket.onopen = function(event) {
+        console.log('WebSocket connection established');
+    };
+
+    socket.onmessage = function(event) {
+        const message = JSON.parse(event.data);
+        displayChatMessage(message);
+    };
+
+    socket.onerror = function(error) {
+        console.error('WebSocket error:', error);
+    };
+
+    chatInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendChatMessage();
+        }
+    });
+}
+
+function sendChatMessage() {
+    const message = chatInput.value.trim();
+    if (message) {
+        const chatMessage = {
+            channel: channelNumber,
+            message: message
+        };
+        socket.send(JSON.stringify(chatMessage));
+        chatInput.value = '';
+    }
+}
+
+function displayChatMessage(message) {
+    const messageElement = document.createElement('div');
+    messageElement.textContent = `Channel ${message.channel}: ${message.message}`;
+    chatMessages.appendChild(messageElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function toggleChat() {
+    if (showChat) {
+        showChat = false;
+        chatContainer.style.display = 'none';
+    } else {
+        showChat = true;
+        chatContainer.style.display = 'block';
+    }
+}
+
+// Initialize chat when the page loads
+window.addEventListener('load', initializeChat);

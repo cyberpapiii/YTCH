@@ -1,0 +1,44 @@
+const WebSocket = require('ws');
+const http = require('http');
+
+const server = http.createServer();
+const wss = new WebSocket.Server({ server });
+
+const clients = new Map();
+
+wss.on('connection', (ws) => {
+    console.log('New client connected');
+
+    ws.on('message', (message) => {
+        const data = JSON.parse(message);
+        const channel = data.channel;
+
+        if (!clients.has(channel)) {
+            clients.set(channel, new Set());
+        }
+        clients.get(channel).add(ws);
+
+        // Broadcast the message to all clients in the same channel
+        clients.get(channel).forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify(data));
+            }
+        });
+    });
+
+    ws.on('close', () => {
+        console.log('Client disconnected');
+        // Remove the client from all channels
+        clients.forEach((channelClients, channel) => {
+            channelClients.delete(ws);
+            if (channelClients.size === 0) {
+                clients.delete(channel);
+            }
+        });
+    });
+});
+
+const PORT = 8080;
+server.listen(PORT, () => {
+    console.log(`WebSocket server is running on port ${PORT}`);
+});
