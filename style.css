@@ -27,6 +27,20 @@ body {
     background-repeat: repeat;
 }
 
+.static-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    opacity: 0;
+    z-index: 17;
+    display: none;
+    background-image: url("icons/static.gif");
+    background-size: 200px 200px;
+    background-repeat: repeat;
+}
+
 .smpte {
     position: fixed;
     top: 0;

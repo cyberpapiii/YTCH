@@ -249,6 +249,20 @@ function switchChannel(a) {
             channelNumber = 1;
         }
         localStorage.setItem("storedChannelNumber", channelNumber);
+        
+        // Show static overlay
+        let staticOverlay = document.querySelector(".static-overlay");
+        staticOverlay.style.display = "block";
+        staticOverlay.style.opacity = "1";
+        
+        // Hide static overlay after 500ms
+        setTimeout(() => {
+            staticOverlay.style.opacity = "0";
+            setTimeout(() => {
+                staticOverlay.style.display = "none";
+            }, 500); // Additional delay to allow fade-out
+        }, 500);
+        
         playChannel(channelNumber, true);
     }
 }
