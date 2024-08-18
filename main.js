@@ -335,6 +335,19 @@ function initializeChat() {
 
     const minimizeBtn = chatContainer.querySelector('.chat-minimize-btn');
     minimizeBtn.addEventListener('click', minimizeChat);
+    updateMinimizeButton();
+}
+
+function updateMinimizeButton() {
+    const chatContainer = document.querySelector('.chat-container');
+    const minimizeBtn = chatContainer.querySelector('.chat-minimize-btn img');
+    if (chatContainer.classList.contains('minimized')) {
+        minimizeBtn.src = "icons/chat.svg";
+        minimizeBtn.alt = "Maximize";
+    } else {
+        minimizeBtn.src = "icons/minimize-2.svg";
+        minimizeBtn.alt = "Minimize";
+    }
 }
 
 function sendChatMessage() {
@@ -384,6 +397,7 @@ function toggleChat() {
 function minimizeChat() {
     const chatContainer = document.querySelector('.chat-container');
     chatContainer.classList.toggle('minimized');
+    updateMinimizeButton();
 }
 
 function promptForUserName() {
