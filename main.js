@@ -423,7 +423,6 @@ function displayChatMessage(message) {
     const messageElement = document.createElement('div');
     messageElement.className = 'chat-message';
     messageElement.innerHTML = `
-        <span class="chat-timestamp">[${message.timestamp}]</span>
         <span class="chat-user">${message.user}:</span>
         <span class="chat-text">${message.message}</span>
     `;

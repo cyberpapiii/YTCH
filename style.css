@@ -173,7 +173,6 @@ body {
     position: fixed;
     bottom: 2rem;
     right: 2rem;
-    left: 2rem;
     z-index: 19;
     display: none;
     flex-direction: column;
@@ -183,7 +182,6 @@ body {
     background-color: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(7px);
-    margin-left: 1rem; /* Add margin to the left */
 }
 
 .control .button {
@@ -338,9 +336,9 @@ body {
 }
 
 .chat-container {
-    position: fixed; /* Ensure the chat container is fixed */
-    bottom: 2rem;    /* Align to the bottom */
-    left: 2rem;      /* Align to the left */
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
     max-width: 400px;
     max-height: 265px;
     display: flex;
@@ -354,8 +352,6 @@ body {
     border-radius: 1rem;
     padding: 1rem;
     cursor: move;
-    overflow: hidden; /* Ensure content does not overflow */
-    margin-right: 1rem; /* Add margin to the right */
 }
 
 @media only screen and (max-width: 600px) {
@@ -387,13 +383,13 @@ body {
 
 .chat-container.minimized {
     display: inline-flex !important;
-    align-items: center;
+    align-items: Left;
     padding: 0.5rem;
 }
 
 .chat-container.minimized .chat-header {
     display: flex;
-    align-items: center;
+    align-items: left;
     margin-bottom: 0;
 }
 
@@ -451,7 +447,6 @@ body {
     margin-bottom: 1rem;
     color: #fff;
     font-size: 0.8rem;
-    max-height: calc(100% - 4rem); /* Adjust max height to fit within the container */
 }
 
 .chat-input {
@@ -467,12 +462,6 @@ body {
 
 .chat-message {
     margin-bottom: 0.5rem;
-}
-
-.chat-timestamp {
-    color: #888;
-    font-size: 0.7em;
-    margin-right: 5px;
 }
 
 .chat-user {
