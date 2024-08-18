@@ -61,7 +61,7 @@ function playChannel(ch, s) {
         player.loadVideoById(playingNow, startAt);
         player.setVolume(100);
         player.setPlaybackRate(1);
-        staticNoise.style.opacity = 0;
+        // Static noise will be hidden by the switchChannel function
     } else if (s) {
         console.log("Sync failed, getting new list");
         getList();
