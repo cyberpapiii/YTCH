@@ -35,12 +35,15 @@ function resizePlayer() {
 }
 
 function getList() {
+    console.log("Getting video list");
     vids = {};
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
+            console.log("Video list received");
             r = JSON.parse(this.responseText);
             vids = r;
+            console.log("Video list:", vids);
             playChannel(channelNumber, false);
         }
     };
