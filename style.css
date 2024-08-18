@@ -285,8 +285,8 @@ body {
 
 .chat-container {
     position: fixed;
-    bottom: 60px;
-    right: 20px;
+    bottom: calc(2rem + 220px); /* Adjust this value based on the height of your controls */
+    right: 2rem;
     width: 300px;
     height: 400px;
     background-color: rgba(0, 0, 0, 0.8);
