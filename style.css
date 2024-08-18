@@ -291,7 +291,7 @@ body {
 }
 
 .user-count {
-    font-size: 1.5rem;
+    font-size: 1.0rem;
     color: #fff;
     background-color: #ff0000;
     padding: 0.2rem 0.5rem;
@@ -302,11 +302,12 @@ body {
 }
 
 .live-indicator {
-    font-size: 1.5rem;
+    font-size: 1.0rem;
     color: #fff;
     background-color: #ff0000;
     padding: 0.2rem 0.5rem;
     margin-right: 1rem;
+    margin-left: 1rem;
     font-family: "IBM Plex Mono", monospace;
     font-weight: 700;
     border-radius: 0.2rem;

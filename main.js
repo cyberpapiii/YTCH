@@ -290,7 +290,6 @@ function toggleControl() {
     control.style.animation = "none";
 }
 
-
 function togglePower() {
     if (isOn) {
         isOn = false;
@@ -303,6 +302,7 @@ function togglePower() {
         playChannel(channelNumber, true);
     }
 }
+
 function toggleInfo() {
     if (showInfo) {
         showInfo = false;
@@ -352,8 +352,12 @@ function connectWebSocket() {
     });
 
     socket.addEventListener('message', function (event) {
-        const chatMessage = JSON.parse(event.data);
-        displayChatMessage(chatMessage);
+        const data = JSON.parse(event.data);
+        if (data.type === 'userCount') {
+            userCountElement.textContent = data.count;
+        } else {
+            displayChatMessage(data);
+        }
     });
 
     socket.addEventListener('close', function (event) {
