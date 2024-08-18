@@ -61,12 +61,15 @@ function playChannel(ch, s) {
         player.loadVideoById(playingNow, startAt);
         player.setVolume(100);
         player.setPlaybackRate(1);
+        staticNoise.style.opacity = 0;
     } else if (s) {
         console.log("Sync failed, getting new list");
         getList();
     } else {
         console.log("Sync failed, showing SMPTE");
         smpte.style.opacity = 1;
+        staticNoise.style.opacity = 1;
+        videoId.textContent = "NO SIGNAL";
     }
 }
 
@@ -79,7 +82,9 @@ function sync(ch) {
         console.error("No videos for channel", ch);
         return false;
     }
+    console.log("Videos for channel", ch, ":", vids[ch]);
     for (let i in vids[ch]) {
+        console.log("Checking video", i, ":", vids[ch][i]);
         if (t >= vids[ch][i].playAt && t < vids[ch][i].playAt + vids[ch][i].duration) {
             playingNowOrder = i;
             playingNow = vids[ch][i].id;
@@ -89,6 +94,15 @@ function sync(ch) {
         }
     }
     console.log("No current video found for channel", ch);
+    // If no current video is found, play the first video in the channel
+    if (vids[ch] && Object.keys(vids[ch]).length > 0) {
+        let firstVideoKey = Object.keys(vids[ch])[0];
+        playingNowOrder = firstVideoKey;
+        playingNow = vids[ch][firstVideoKey].id;
+        startAt = 0;
+        console.log("Playing first video in channel:", playingNow);
+        return true;
+    }
     return false;
 }
 
