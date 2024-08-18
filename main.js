@@ -274,22 +274,17 @@ function toggleControl() {
     let minimize = document.querySelector(".minimize");
     let minimizeImg = document.querySelector(".minimize img");
     if (isMin) {
-        min[0].style.display = "flex";
-        min[1].style.display = "flex";
-        min[2].style.display = "flex";
-        min[3].style.display = "flex"; // Add this line for the chat button
+        min.forEach(el => el.style.display = "flex");
         minimize.style.margin = "0 0 1rem auto";
         minimizeImg.src = "icons/minimize-2.svg";
         isMin = false;
     } else {
-        min[0].style.display = "none";
-        min[1].style.display = "none";
-        min[2].style.display = "none";
-        min[3].style.display = "none"; // Add this line for the chat button
+        min.forEach(el => el.style.display = "none");
         minimize.style.margin = "0";
         minimizeImg.src = "icons/maximize.svg";
         isMin = true;
     }
+    control.style.animation = "none";
 }
 
 
