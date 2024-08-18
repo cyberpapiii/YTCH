@@ -322,7 +322,7 @@ function initializeChat() {
     chatContainer.innerHTML = `
         <div class="chat-header">
             <span>Chat</span>
-            <button class="chat-minimize-btn">_</button>
+            <button class="chat-minimize-btn"><img src="icons/minimize-2.svg" alt="Minimize"></button>
         </div>
         <div class="chat-messages"></div>
         <input type="text" class="chat-input" placeholder="Type your message...">
