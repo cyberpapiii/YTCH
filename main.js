@@ -14,7 +14,6 @@ let userName = '';
 let socket;
 let reconnectAttempts = 0;
 let userCountElement = document.querySelector(".user-count");
-let chatInitialized = false;
 
 if (localStorage.getItem("storedChannelNumber") === null) {
     channelNumber = 1;
@@ -314,67 +313,147 @@ function toggleInfo() {
     }
 }
 
+function initializeChat() {
+    const chatContainer = document.createElement('div');
+    chatContainer.className = 'chat-container';
+    chatContainer.style.display = 'none';
+    chatContainer.innerHTML = `
+        <div class="chat-header">
+            <span>Chat</span>
+            <button class="chat-minimize-btn"><img src="icons/minimize-2.svg" alt="Minimize"></button>
+        </div>
+        <div class="chat-messages"></div>
+        <input type="text" class="chat-input" placeholder="Type your message...">
+    `;
+    chatContainer.style.position = 'absolute';
+    document.body.appendChild(chatContainer);
+
+    const chatInput = chatContainer.querySelector('.chat-input');
+    chatInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendChatMessage();
+        }
+    });
+
+    const minimizeBtn = chatContainer.querySelector('.chat-minimize-btn');
+    minimizeBtn.addEventListener('click', minimizeChat);
+    updateMinimizeButton();
+
+    connectWebSocket();
+}
+
+function connectWebSocket() {
+    socket = new WebSocket('wss://ytch.onrender.com');
+
+    socket.addEventListener('open', function (event) {
+        console.log('Connected to WebSocket server');
+        reconnectAttempts = 0;
+    });
+
+    socket.addEventListener('message', function (event) {
+        const data = JSON.parse(event.data);
+        if (data.type === 'userCount') {
+            updateUserCount(data.count);
+        } else {
+            displayChatMessage(data);
+        }
+    });
+
+    socket.addEventListener('close', function (event) {
+        console.log('Disconnected from WebSocket server');
+        attemptReconnect();
+    });
+
+    socket.addEventListener('error', function (event) {
+        console.error('WebSocket error:', event);
+        socket.close();
+    });
+}
+
+function attemptReconnect() {
+    if (reconnectAttempts < 5) { // Limit the number of reconnection attempts
+        const timeout = Math.pow(2, reconnectAttempts) * 1000; // Exponential backoff
+        console.log(`Attempting to reconnect in ${timeout / 1000} seconds...`);
+        setTimeout(() => {
+            reconnectAttempts++;
+            connectWebSocket();
+        }, timeout);
+    } else {
+        console.error('Max reconnect attempts reached. Could not reconnect to WebSocket server.');
+    }
+}
+
+function updateMinimizeButton() {
+    const chatContainer = document.querySelector('.chat-container');
+    const minimizeBtn = chatContainer.querySelector('.chat-minimize-btn img');
+    if (chatContainer.classList.contains('minimized')) {
+        minimizeBtn.src = "icons/maximize.svg";
+        minimizeBtn.alt = "Maximize";
+    } else {
+        minimizeBtn.src = "icons/minimize-2.svg";
+        minimizeBtn.alt = "Minimize";
+    }
+}
+
+function updateUserCount(count) {
+    userCountElement.textContent = count;
+}
+
+function sendChatMessage() {
+    const chatInput = document.querySelector('.chat-input');
+    const message = chatInput.value.trim();
+    if (message && userName) {
+        const chatMessage = {
+            user: userName,
+            message: message,
+            timestamp: new Date().toLocaleTimeString()
+        };
+        chatInput.value = '';
+
+        // Send message to WebSocket server
+        socket.send(JSON.stringify(chatMessage));
+    }
+}
+
+function displayChatMessage(message) {
+    const chatMessagesElement = document.querySelector('.chat-messages');
+    const messageElement = document.createElement('div');
+    messageElement.className = 'chat-message';
+    messageElement.innerHTML = `
+        <span class="chat-timestamp">[${message.timestamp}]</span>
+        <span class="chat-user">${message.user}:</span>
+        <span class="chat-text">${message.message}</span>
+    `;
+    chatMessagesElement.appendChild(messageElement);
+    chatMessagesElement.scrollTop = chatMessagesElement.scrollHeight;
+}
+
 function toggleChat() {
     const chatContainer = document.querySelector('.chat-container');
-    if (chatContainer.style.display === 'none' || chatContainer.style.display === '') {
-        chatContainer.style.display = 'flex';
-        initializeChat();
-    } else {
+    if (showChat) {
+        showChat = false;
         chatContainer.style.display = 'none';
-    }
-}
-
-function initializeChat() {
-    if (!chatInitialized) {
-        const username = prompt("Enter your username for the chat:");
-        if (username) {
-            console.log(`Chat initialized for user: ${username}`);
-            chatInitialized = true;
-            setupChatInputHandlers();
-        }
-    }
-}
-
-function setupChatInputHandlers() {
-    const chatInput = document.querySelector('.chat-input');
-    const chatForm = document.querySelector('.chat-form');
-
-    if (chatInput && chatForm) {
-        chatInput.addEventListener('focus', () => {
-            // Allow default zooming behavior on focus
-        });
-
-        chatInput.addEventListener('blur', resetZoom);
-
-        chatForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            // Handle message sending logic here
-            resetZoom();
-        });
-    }
-}
-
-function resetZoom() {
-    // Reset zoom after a short delay to ensure the keyboard has time to close
-    setTimeout(() => {
-        const viewportMeta = document.querySelector('meta[name="viewport"]');
-        if (viewportMeta) {
-            viewportMeta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0';
-        }
-    }, 300);
-}
-
-function toggleStatic(force = null) {
-    if (force !== null) {
-        staticOn = force;
     } else {
-        staticOn = !staticOn;
+        showChat = true;
+        chatContainer.style.display = 'flex';
+        chatContainer.classList.remove('minimized');
+        if (!userName) {
+            promptForUserName();
+        }
     }
-    
-    // Only change the static effect if it's not due to chat initialization
-    if (!chatInitialized || force !== null) {
-        document.querySelector('.static-overlay').style.display = staticOn ? 'block' : 'none';
-        document.querySelector('.static-overlay').style.opacity = staticOn ? '1' : '0';
+}
+
+function minimizeChat() {
+    const chatContainer = document.querySelector('.chat-container');
+    chatContainer.classList.toggle('minimized');
+    updateMinimizeButton();
+}
+
+function promptForUserName() {
+    userName = prompt("Enter your name for the chat:", "");
+    if (!userName) {
+        userName = "Anonymous";
     }
 }
 
