@@ -336,7 +336,7 @@ body {
 }
 
 .chat-container {
-    position: fixed; /* Change from absolute to fixed */
+    position: fixed; /* Ensure the chat container is fixed */
     bottom: 1rem;    /* Align to the bottom */
     left: 1rem;      /* Align to the left */
     max-width: 400px;
@@ -352,6 +352,7 @@ body {
     border-radius: 1rem;
     padding: 1rem;
     cursor: move;
+    overflow: hidden; /* Ensure content does not overflow */
 }
 
 @media only screen and (max-width: 600px) {
@@ -447,6 +448,7 @@ body {
     margin-bottom: 1rem;
     color: #fff;
     font-size: 0.8rem;
+    max-height: calc(100% - 4rem); /* Adjust max height to fit within the container */
 }
 
 .chat-input {
