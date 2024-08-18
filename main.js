@@ -12,6 +12,8 @@ let isMin = false, isMuted = true, isOn = true, showInfo = false, showChat = fal
 let chatMessages = [];
 let userName = '';
 let socket;
+let reconnectAttempts = 0;
+let userCountElement = document.querySelector(".user-count");
 
 if (localStorage.getItem("storedChannelNumber") === null) {
     channelNumber = 1;
@@ -338,11 +340,15 @@ function initializeChat() {
     minimizeBtn.addEventListener('click', minimizeChat);
     updateMinimizeButton();
 
-    // Connect to WebSocket server
+    connectWebSocket();
+}
+
+function connectWebSocket() {
     socket = new WebSocket('wss://ytch.onrender.com'); // Updated URL
 
     socket.addEventListener('open', function (event) {
         console.log('Connected to WebSocket server');
+        reconnectAttempts = 0; // Reset reconnect attempts on successful connection
     });
 
     socket.addEventListener('message', function (event) {
@@ -352,7 +358,26 @@ function initializeChat() {
 
     socket.addEventListener('close', function (event) {
         console.log('Disconnected from WebSocket server');
+        attemptReconnect();
     });
+
+    socket.addEventListener('error', function (event) {
+        console.error('WebSocket error:', event);
+        socket.close(); // Close the socket to trigger the reconnect logic
+    });
+}
+
+function attemptReconnect() {
+    if (reconnectAttempts < 5) { // Limit the number of reconnection attempts
+        const timeout = Math.pow(2, reconnectAttempts) * 1000; // Exponential backoff
+        console.log(`Attempting to reconnect in ${timeout / 1000} seconds...`);
+        setTimeout(() => {
+            reconnectAttempts++;
+            connectWebSocket();
+        }, timeout);
+    } else {
+        console.error('Max reconnect attempts reached. Could not reconnect to WebSocket server.');
+    }
 }
 
 function updateMinimizeButton() {
@@ -377,9 +402,7 @@ function sendChatMessage() {
             message: message,
             timestamp: new Date().toLocaleTimeString()
         };
-        chatMessages.push(chatMessage);
-        displayChatMessage(chatMessage);
-        chatInput.value = '';
+        chatInput.value = ''; // Clear the input field
 
         // Send message to WebSocket server
         socket.send(JSON.stringify(chatMessage));

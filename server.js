@@ -10,6 +10,7 @@ const clients = new Map();
 
 wss.on('connection', (ws) => {
     console.log('New client connected');
+    broadcastUserCount();
 
     ws.on('message', (message) => {
         const data = JSON.parse(message);
@@ -37,8 +38,19 @@ wss.on('connection', (ws) => {
                 clients.delete(channel);
             }
         });
+        broadcastUserCount();
     });
 });
+
+function broadcastUserCount() {
+    const userCount = Array.from(clients.values()).reduce((acc, set) => acc + set.size, 0);
+    const message = JSON.stringify({ type: 'userCount', count: userCount });
+    wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(message);
+        }
+    });
+}
 
 server.listen(PORT, () => {
     console.log(`WebSocket server is running on port ${PORT}`);

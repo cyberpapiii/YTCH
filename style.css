@@ -281,15 +281,55 @@ body {
     margin-right: 1rem;
 }
 
-.channel-name {
+.channel-info {
     position: fixed;
     top: 2rem;
     left: 2rem;
+    display: flex;
+    align-items: center;
+    z-index: 17;
+}
+
+.user-count {
+    font-size: 1.5rem;
+    color: #fff;
+    background-color: #ff0000;
+    padding: 0.2rem 0.5rem;
+    margin-right: 1rem;
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 700;
+    border-radius: 0.2rem;
+}
+
+.live-indicator {
+    font-size: 1.5rem;
+    color: #fff;
+    background-color: #ff0000;
+    padding: 0.2rem 0.5rem;
+    margin-right: 1rem;
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 700;
+    border-radius: 0.2rem;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.channel-name {
     font-size: 2rem;
     color: #00ff22;
     text-transform: uppercase;
     text-shadow: 0px 0px 2px #000;
-    z-index: 17;
     font-family: "IBM Plex Mono", monospace;
     font-weight: 700;
 }
