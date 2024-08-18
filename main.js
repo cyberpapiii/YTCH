@@ -88,38 +88,51 @@ if (!YT.loading) {
 };
 
 function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player', {
-        height: 400,
-        width: 700,
-        playerVars: {
-            'playsinline': 1,
-            'disablekb': 1,
-            'enablejsapi': 1,
-            'iv_load_policy': 3,
-            'cc_load_policy': 0,
-            'controls': 0,
-            'rel': 0,
-            'autoplay': 1,
-            'mute': 1
-        },
-        events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange,
-            'onAutoplayBlocked': onAutoplayBlocked,
-            'onError': onErrorOccured
-        }
-    });
-    resizePlayer();
-    window.addEventListener('resize', function (event) {
+    console.log("YouTube API Ready");
+    try {
+        player = new YT.Player('player', {
+            height: 400,
+            width: 700,
+            playerVars: {
+                'playsinline': 1,
+                'disablekb': 1,
+                'enablejsapi': 1,
+                'iv_load_policy': 3,
+                'cc_load_policy': 0,
+                'controls': 0,
+                'rel': 0,
+                'autoplay': 1,
+                'mute': 1
+            },
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange,
+                'onAutoplayBlocked': onAutoplayBlocked,
+                'onError': onErrorOccured
+            }
+        });
         resizePlayer();
-    }, true);
+        window.addEventListener('resize', function (event) {
+            resizePlayer();
+        }, true);
+    } catch (error) {
+        console.error("Error initializing YouTube player:", error);
+    }
+}
+
+// Ensure the function is called when the API is ready
+if (typeof YT !== 'undefined' && YT.loaded) {
+    onYouTubeIframeAPIReady();
+} else {
+    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
 }
 
 function onErrorOccured(event) {
-    console.error(event.data);
+    console.error("YouTube player error:", event.data);
 }
 
 function onPlayerReady(event) {
+    console.log("YouTube player ready");
     getList();
 }
 
