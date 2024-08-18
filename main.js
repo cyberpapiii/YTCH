@@ -49,31 +49,43 @@ function getList() {
 }
 
 function playChannel(ch, s) {
+    console.log("Playing channel:", ch);
     (ch < 10) ? channelName.textContent = "CH 0" + ch : channelName.textContent = "CH " + ch;
     control.style.display = "flex";
     smpte.style.opacity = 0;
     if (sync(ch)) {
+        console.log("Synced successfully. Loading video:", playingNow, "at", startAt);
         player.loadVideoById(playingNow, startAt);
         player.setVolume(100);
         player.setPlaybackRate(1);
     } else if (s) {
+        console.log("Sync failed, getting new list");
         getList();
     } else {
+        console.log("Sync failed, showing SMPTE");
         smpte.style.opacity = 1;
     }
 }
 
 function sync(ch) {
+    console.log("Syncing channel:", ch);
     playingNow = 0;
     let t = Math.floor(Date.now() / 1000);
+    console.log("Current time:", t);
+    if (!vids[ch]) {
+        console.error("No videos for channel", ch);
+        return false;
+    }
     for (let i in vids[ch]) {
         if (t >= vids[ch][i].playAt && t < vids[ch][i].playAt + vids[ch][i].duration) {
             playingNowOrder = i;
             playingNow = vids[ch][i].id;
             startAt = t - vids[ch][i].playAt;
+            console.log("Synced to video:", playingNow, "at", startAt);
             return true;
         }
     }
+    console.log("No current video found for channel", ch);
     return false;
 }
 
@@ -111,6 +123,7 @@ function onYouTubeIframeAPIReady() {
                 'onError': onErrorOccured
             }
         });
+        console.log("Player object created:", player);
         resizePlayer();
         window.addEventListener('resize', function (event) {
             resizePlayer();
@@ -122,10 +135,21 @@ function onYouTubeIframeAPIReady() {
 
 // Ensure the function is called when the API is ready
 if (typeof YT !== 'undefined' && YT.loaded) {
+    console.log("YT is already loaded, calling onYouTubeIframeAPIReady immediately");
     onYouTubeIframeAPIReady();
 } else {
+    console.log("YT not loaded yet, setting onYouTubeIframeAPIReady as callback");
     window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
 }
+
+// Add a fallback to ensure the function is called
+window.addEventListener('load', function() {
+    console.log("Window loaded, checking if onYouTubeIframeAPIReady has been called");
+    if (typeof player === 'undefined') {
+        console.log("Player not initialized, calling onYouTubeIframeAPIReady");
+        onYouTubeIframeAPIReady();
+    }
+});
 
 function onErrorOccured(event) {
     console.error("YouTube player error:", event.data);
