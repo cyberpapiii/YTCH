@@ -182,6 +182,7 @@ body {
     background-color: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(7px);
+    margin-left: 1rem; /* Add margin to the left */
 }
 
 .control .button {
@@ -353,6 +354,7 @@ body {
     padding: 1rem;
     cursor: move;
     overflow: hidden; /* Ensure content does not overflow */
+    margin-right: 1rem; /* Add margin to the right */
 }
 
 @media only screen and (max-width: 600px) {
