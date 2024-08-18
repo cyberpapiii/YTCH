@@ -342,7 +342,7 @@ function updateMinimizeButton() {
     const chatContainer = document.querySelector('.chat-container');
     const minimizeBtn = chatContainer.querySelector('.chat-minimize-btn img');
     if (chatContainer.classList.contains('minimized')) {
-        minimizeBtn.src = "icons/chat.svg";
+        minimizeBtn.src = "icons/maximize.svg";
         minimizeBtn.alt = "Maximize";
     } else {
         minimizeBtn.src = "icons/minimize-2.svg";
