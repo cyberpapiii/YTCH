@@ -463,16 +463,12 @@ function adjustChatContainerWidth() {
     const controlContainer = document.querySelector('.control');
     
     if (chatContainer && controlContainer) {
-        const windowWidth = window.innerWidth;
-        const controlLeft = controlContainer.getBoundingClientRect().left;
+        const controlRect = controlContainer.getBoundingClientRect();
+        const availableWidth = controlRect.left - 32; // 16px buffer on each side
         
-        let newWidth = controlLeft - 32; // 16px buffer on each side
-        
-        if (newWidth > 400) {
-            newWidth = 400; // Max width
-        } else if (newWidth < 200) {
-            newWidth = windowWidth - 32; // Minimum width, accounting for left margin
-        }
+        // Ensure the chat container does not exceed its max width
+        let newWidth = Math.min(availableWidth, 400); // Max width
+        newWidth = Math.max(newWidth, 200); // Minimum width
         
         chatContainer.style.width = `${newWidth}px`;
     }
