@@ -327,6 +327,7 @@ function initializeChat() {
         <div class="chat-messages"></div>
         <input type="text" class="chat-input" placeholder="Type your message...">
     `;
+    chatContainer.style.position = 'absolute';
     document.body.appendChild(chatContainer);
 
     const chatInput = chatContainer.querySelector('.chat-input');
