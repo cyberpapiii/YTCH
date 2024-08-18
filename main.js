@@ -339,7 +339,7 @@ function initializeChat() {
     updateMinimizeButton();
 
     // Connect to WebSocket server
-    socket = new WebSocket('wss://your-websocket-service.onrender.com'); // Update this URL
+    socket = new WebSocket('wss://ytch.onrender.com'); // Updated URL
 
     socket.addEventListener('open', function (event) {
         console.log('Connected to WebSocket server');
