@@ -320,6 +320,10 @@ function initializeChat() {
     chatContainer.className = 'chat-container';
     chatContainer.style.display = 'none';
     chatContainer.innerHTML = `
+        <div class="chat-header">
+            <span>Chat</span>
+            <button class="chat-minimize-btn">_</button>
+        </div>
         <div class="chat-messages"></div>
         <input type="text" class="chat-input" placeholder="Type your message...">
     `;
@@ -332,6 +336,9 @@ function initializeChat() {
             sendChatMessage();
         }
     });
+
+    const minimizeBtn = chatContainer.querySelector('.chat-minimize-btn');
+    minimizeBtn.addEventListener('click', minimizeChat);
 }
 
 function sendChatMessage() {
@@ -370,11 +377,17 @@ function toggleChat() {
         chatContainer.style.display = 'none';
     } else {
         showChat = true;
-        chatContainer.style.display = 'block';
+        chatContainer.style.display = 'flex';
+        chatContainer.classList.remove('minimized');
         if (!userName) {
             promptForUserName();
         }
     }
+}
+
+function minimizeChat() {
+    const chatContainer = document.querySelector('.chat-container');
+    chatContainer.classList.toggle('minimized');
 }
 
 function promptForUserName() {

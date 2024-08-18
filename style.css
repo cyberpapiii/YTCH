@@ -295,6 +295,30 @@ body {
     flex-direction: column;
     z-index: 1000;
     font-family: "IBM Plex Mono", monospace;
+    transition: height 0.3s ease-in-out;
+}
+
+.chat-container.minimized {
+    height: 40px;
+    overflow: hidden;
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #333;
+    color: #fff;
+    cursor: move;
+}
+
+.chat-minimize-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
 }
 
 .chat-messages {
