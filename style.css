@@ -284,10 +284,11 @@ body {
 }
 
 .chat-container {
-    position: absolute;
-    bottom: calc(2rem + 220px);
+    position: fixed;
+    top: 2rem;
     right: 2rem;
     width: 300px;
+    max-height: 500px;
     display: flex;
     flex-direction: column;
     z-index: 1000;
