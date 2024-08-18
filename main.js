@@ -6,13 +6,11 @@ let videoId = document.querySelector(".video-id");
 let control = document.querySelector(".control");
 let powerScreen = document.querySelector(".power-screen");
 let info = document.querySelector(".info");
-let chatContainer = document.querySelector(".chat-container");
-let chatMessages = document.querySelector(".chat-messages");
-let chatInput = document.querySelector(".chat-input");
 let player, playingNow, playingNowOrder, startAt, vids;
 let channelNumber = 1;
 let isMin = false, isMuted = true, isOn = true, showInfo = false, showChat = false;
-let socket;
+let chatMessages = [];
+let userName = '';
 
 if (localStorage.getItem("storedChannelNumber") === null) {
     channelNumber = 1;
@@ -279,6 +277,7 @@ function toggleControl() {
         min[0].style.display = "flex";
         min[1].style.display = "flex";
         min[2].style.display = "flex";
+        min[3].style.display = "flex"; // Add this line for the chat button
         minimize.style.margin = "0 0 1rem auto";
         minimizeImg.src = "icons/minimize-2.svg";
         isMin = false;
@@ -286,6 +285,7 @@ function toggleControl() {
         min[0].style.display = "none";
         min[1].style.display = "none";
         min[2].style.display = "none";
+        min[3].style.display = "none"; // Add this line for the chat button
         minimize.style.margin = "0";
         minimizeImg.src = "icons/maximize.svg";
         isMin = true;
@@ -316,21 +316,16 @@ function toggleInfo() {
 }
 
 function initializeChat() {
-    socket = new WebSocket('ws://' + window.location.hostname + ':8080');
+    const chatContainer = document.createElement('div');
+    chatContainer.className = 'chat-container';
+    chatContainer.style.display = 'none';
+    chatContainer.innerHTML = `
+        <div class="chat-messages"></div>
+        <input type="text" class="chat-input" placeholder="Type your message...">
+    `;
+    document.body.appendChild(chatContainer);
 
-    socket.onopen = function(event) {
-        console.log('WebSocket connection established');
-    };
-
-    socket.onmessage = function(event) {
-        const message = JSON.parse(event.data);
-        displayChatMessage(message);
-    };
-
-    socket.onerror = function(error) {
-        console.error('WebSocket error:', error);
-    };
-
+    const chatInput = chatContainer.querySelector('.chat-input');
     chatInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -340,31 +335,52 @@ function initializeChat() {
 }
 
 function sendChatMessage() {
+    const chatInput = document.querySelector('.chat-input');
     const message = chatInput.value.trim();
-    if (message) {
+    if (message && userName) {
         const chatMessage = {
             channel: channelNumber,
-            message: message
+            user: userName,
+            message: message,
+            timestamp: new Date().toLocaleTimeString()
         };
-        socket.send(JSON.stringify(chatMessage));
+        chatMessages.push(chatMessage);
+        displayChatMessage(chatMessage);
         chatInput.value = '';
     }
 }
 
 function displayChatMessage(message) {
+    const chatMessagesElement = document.querySelector('.chat-messages');
     const messageElement = document.createElement('div');
-    messageElement.textContent = `Channel ${message.channel}: ${message.message}`;
-    chatMessages.appendChild(messageElement);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    messageElement.className = 'chat-message';
+    messageElement.innerHTML = `
+        <span class="chat-timestamp">[${message.timestamp}]</span>
+        <span class="chat-user">${message.user}:</span>
+        <span class="chat-text">${message.message}</span>
+    `;
+    chatMessagesElement.appendChild(messageElement);
+    chatMessagesElement.scrollTop = chatMessagesElement.scrollHeight;
 }
 
 function toggleChat() {
+    const chatContainer = document.querySelector('.chat-container');
     if (showChat) {
         showChat = false;
         chatContainer.style.display = 'none';
     } else {
         showChat = true;
         chatContainer.style.display = 'block';
+        if (!userName) {
+            promptForUserName();
+        }
+    }
+}
+
+function promptForUserName() {
+    userName = prompt("Enter your name for the chat:", "");
+    if (!userName) {
+        userName = "Anonymous";
     }
 }
 
