@@ -299,7 +299,7 @@ body {
     top: 2rem;
     right: 2rem;
     width: 300px;
-    max-height: 500px;
+    max-height: 450px;
     display: flex;
     flex-direction: column;
     z-index: 1000;
