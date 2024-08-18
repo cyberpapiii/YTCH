@@ -354,6 +354,14 @@ body {
     cursor: move;
 }
 
+@media only screen and (max-width: 600px) {
+    .chat-container {
+        left: 1rem;
+        bottom: 1rem;
+        width: calc(100% - 2rem);
+    }
+}
+
 .chat-container * {
     cursor: default;
 }
@@ -478,13 +486,6 @@ body {
 
     100% {
         opacity: 0;
-    }
-}
-
-@media only screen and (max-width: 600px) {
-    .chat-container {
-        left: 1rem;
-        width: calc(100% - 2rem);
     }
 }
 
