@@ -339,7 +339,6 @@ body {
     position: fixed;
     bottom: 2rem;
     left: 2rem;
-    width: calc(100% - 4rem);
     max-width: 400px;
     max-height: 265px;
     display: flex;
