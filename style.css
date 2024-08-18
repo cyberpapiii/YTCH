@@ -307,8 +307,18 @@ body {
 }
 
 .chat-container.minimized {
-    height: 40px;
+    height: auto;
+    width: auto;
     overflow: hidden;
+}
+
+.chat-container.minimized .chat-header {
+    margin-bottom: 0;
+}
+
+.chat-container.minimized .chat-messages,
+.chat-container.minimized .chat-input {
+    display: none;
 }
 
 .chat-header {
@@ -318,6 +328,7 @@ body {
     margin-bottom: 1rem;
     color: #fff;
     font-size: 0.9rem;
+    padding: 0.5rem;
 }
 
 .chat-minimize-btn {
@@ -326,8 +337,8 @@ body {
     color: #fff;
     font-size: 1.2rem;
     cursor: pointer;
-    width: 3rem;
-    height: 3rem;
+    width: 2rem;
+    height: 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -335,6 +346,7 @@ body {
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1);
     border-radius: 0.3rem;
+    padding: 0;
 }
 
 .chat-minimize-btn img {
