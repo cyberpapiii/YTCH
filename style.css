@@ -337,15 +337,16 @@ body {
 
 .chat-container {
     position: fixed;
-    top: 2rem;
-    right: 2rem;
-    width: 300px;
-    max-height: 450px;
+    bottom: 2rem;
+    left: 2rem;
+    width: calc(100% - 4rem);
+    max-width: 400px;
+    max-height: 265px;
     display: flex;
     flex-direction: column;
     z-index: 1000;
     font-family: "IBM Plex Mono", monospace;
-    transition: height 0.3s ease-in-out;
+    transition: height 0.3s ease-in-out, width 0.3s ease-in-out;
     background-color: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(7px);
@@ -478,6 +479,13 @@ body {
 
     100% {
         opacity: 0;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .chat-container {
+        left: 1rem;
+        width: calc(100% - 2rem);
     }
 }
 

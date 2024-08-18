@@ -438,6 +438,7 @@ function toggleChat() {
         showChat = true;
         chatContainer.style.display = 'flex';
         chatContainer.classList.remove('minimized');
+        adjustChatContainerWidth();
         if (!userName) {
             promptForUserName();
         }
@@ -456,6 +457,31 @@ function promptForUserName() {
         userName = "Anonymous";
     }
 }
+
+function adjustChatContainerWidth() {
+    const chatContainer = document.querySelector('.chat-container');
+    const controlContainer = document.querySelector('.control');
+    
+    if (chatContainer && controlContainer) {
+        const windowWidth = window.innerWidth;
+        const controlLeft = controlContainer.getBoundingClientRect().left;
+        const chatLeft = chatContainer.getBoundingClientRect().left;
+        
+        let newWidth = controlLeft - chatLeft - 16; // 16px buffer
+        
+        if (newWidth > 400) {
+            newWidth = 400; // Max width
+        } else if (newWidth < 200) {
+            newWidth = windowWidth - chatLeft - 16; // Minimum width, accounting for left margin
+        }
+        
+        chatContainer.style.width = `${newWidth}px`;
+    }
+}
+
+// Call this function when initializing the chat and on window resize
+window.addEventListener('resize', adjustChatContainerWidth);
+window.addEventListener('load', adjustChatContainerWidth);
 
 // Initialize chat when the page loads
 window.addEventListener('load', initializeChat);
